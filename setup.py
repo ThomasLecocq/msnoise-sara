@@ -25,10 +25,10 @@ setup(
 
 
     },
-    author = "Thomas Lecocq & MSNoise dev team",
+    author = "Thomas Lecocq & Corentin Caudron",
     author_email = "Thomas.Lecocq@seismology.be",
-    description = "A Python Package for Monitoring Seismic Velocity Changes using Ambient Seismic Noise",
+    description = "The Amplitude Ratio plugin for MSNoise - Bringing SARA (Taisne et al 2011) to MSNoise",
     license = "EUPL-1.1",
-    url = "http://www.msnoise.org",
-    keywords="noise monitoring seismic velocity change dvv dtt doublet stretching cross-correlation acoustics seismology"
+    url = "http://www.msnoise.org/plugins/msnoise-sara",
+    keywords="noise monitoring seismic microseismicity amplitude ratio location seismology"
 )

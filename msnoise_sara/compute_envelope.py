@@ -83,8 +83,8 @@ def main():
             logging.debug("Processing")
             ### ENVELOPE
             trace.data = envelope(trace.data)
-            n = params.env_sampling_rate
-            sps = trace.stats.sampling_rate
+            n = int(params.env_sampling_rate)
+            sps = int(trace.stats.sampling_rate)
             trace.data = bn.move_median(trace.data,
                                         window=sps*n)
             trace.data = trace.data[n*sps-1::sps*n]
