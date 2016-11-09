@@ -9,6 +9,8 @@ default['preprocess_lowpass'] = ["Preprocessing Low-pass value in Hz [15.0]",'15
 default['preprocess_highpass'] = ["Preprocessing High-pass value in Hz [5.0]",'5.0']
 default['preprocess_taper_length'] = ["Length of the taper is seconds (5.0)]",'5.0']
 
+default['components_to_compute'] = ["List (comma separated) [ZZ]", 'ZZ']
+
 default['env_sampling_rate'] = ["Sampling Rate for the Envelopes [1.0]",'1.0']
 
 

@@ -1,7 +1,7 @@
 from msnoise.api import *
 
-from .sara_table_def import SaraConfig, SaraStation
 from .default import default
+from .sara_table_def import SaraConfig, SaraStation
 
 def main():
     engine = get_engine()
@@ -11,6 +11,10 @@ def main():
     SaraConfig.__table__.create(bind=engine, checkfirst=True)
     for name in default.keys():
         session.add(SaraConfig(name=name,value=default[name][-1]))
+        try:
+            session.commit()
+        except:
+            session.rollback()
 
     SaraStation.__table__.create(bind=engine, checkfirst=True)
 

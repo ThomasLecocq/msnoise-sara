@@ -39,7 +39,7 @@ def main():
     params.env_sampling_rate = int(1./float(get_config(db, "env_sampling_rate",
                                           plugin="Sara")))
 
-    params.components_to_compute = get_components_to_compute(db)
+    params.components_to_compute = get_components_to_compute(db, plugin="Sara")
 
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s [%(levelname)s] %(message)s',
@@ -85,7 +85,7 @@ def main():
             trace.data = envelope(trace.data)
             n = int(params.env_sampling_rate)
             sps = int(trace.stats.sampling_rate)
-            trace.data = bn.move_median(trace.data, int_window=sps*n)
+            trace.data = bn.move_median(trace.data, sps*n)
             trace.data = trace.data[n*sps-1::sps*n]
             trace.stats.sampling_rate = 1./float(n)
             trace.data = np.require(trace.data, np.float32)
