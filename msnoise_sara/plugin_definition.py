@@ -1,23 +1,10 @@
-import traceback
-import os
-import click
 import sys
-import flask
-from flask.ext.admin import BaseView, expose
+
+import click
 from flask.ext.admin.contrib.sqla import ModelView
 
-from bokeh.embed import components
-from bokeh.plotting import figure
-from bokeh.resources import INLINE, CDN
-from bokeh.templates import RESOURCES
-
-from obspy.core import read
-
-from msnoise.api import connect
-from msnoise.msnoise_admin import  select_pair
 from .sara_table_def import SaraConfig, SaraStation
 
-import numpy as np
 
 ### COMMAND LINE INTERFACE PLUGIN DEFINITION
 
@@ -44,7 +31,6 @@ def test():
 def install():
     from .install import main
     main()
-
 
 
 @click.command()
@@ -135,61 +121,61 @@ class SaraStationView(ModelView):
                                              category="SARA", **kwargs)
 
 
-class SaraResultPlotter(BaseView):
-    name = "MSNoise"
-    view_title = "Result Plotter"
-    category = "SARA"
-    def __init__(self, session, **kwargs):
-        # You can pass name and other parameters if you want to
-        super(SaraResultPlotter, self).__init__(name="Results",
-                                                category="SARA",
-                                             endpoint="sararesults",
-                                             **kwargs)
-
-    @expose('/')
-    def index(self):
-        args = flask.request.args
-        filters = []
-        pairs = select_pair()
-
-        # Get all the form arguments in the url with defaults
-        filter = int(getitem(args, 'filter', 1))
-        pair = int(getitem(args, 'pair', 0))
-        component = getitem(args, 'component', 'ZZ')
-        format = getitem(args, 'format', 'stack')
-
-        db = connect()
-        station1, station2 = pairs[pair]['text'].replace('.','_').split(' - ')
-
-        x = []
-        y = []
-
-        try:
-            data = read(os.path.join('SARA','RATIO', pairs[pair]['text'].replace("-","_").replace(' ',''),"*"))
-            data.merge(fill_value=1)
-            x = np.arange(data[0].stats.npts)
-            y = data[0].data
-        except:
-            traceback.print_exc()
-            pass
-
-        fig = figure(title=pairs[pair]['text'], plot_width=1000)
-        fig.line(x, y, line_width=2)
-
-        plot_resources = RESOURCES.render(
-            js_raw=CDN.js_raw,
-            css_raw=CDN.css_raw,
-            js_files=CDN.js_files,
-            css_files=CDN.css_files,
-        )
-
-        script, div = components(fig, INLINE)
-        return self.render(
-            'admin/results.html',
-            plot_script=script, plot_div=div, plot_resources=plot_resources,
-            filter_list=filters,
-            pair_list=pairs
-        )
+# class SaraResultPlotter(BaseView):
+#     name = "MSNoise"
+#     view_title = "Result Plotter"
+#     category = "SARA"
+#     def __init__(self, session, **kwargs):
+#         # You can pass name and other parameters if you want to
+#         super(SaraResultPlotter, self).__init__(name="Results",
+#                                                 category="SARA",
+#                                              endpoint="sararesults",
+#                                              **kwargs)
+#
+#     @expose('/')
+#     def index(self):
+#         args = flask.request.args
+#         filters = []
+#         pairs = select_pair()
+#
+#         # Get all the form arguments in the url with defaults
+#         filter = int(getitem(args, 'filter', 1))
+#         pair = int(getitem(args, 'pair', 0))
+#         component = getitem(args, 'component', 'ZZ')
+#         format = getitem(args, 'format', 'stack')
+#
+#         db = connect()
+#         station1, station2 = pairs[pair]['text'].replace('.','_').split(' - ')
+#
+#         x = []
+#         y = []
+#
+#         try:
+#             data = read(os.path.join('SARA','RATIO', pairs[pair]['text'].replace("-","_").replace(' ',''),"*"))
+#             data.merge(fill_value=1)
+#             x = np.arange(data[0].stats.npts)
+#             y = data[0].data
+#         except:
+#             traceback.print_exc()
+#             pass
+#
+#         fig = figure(title=pairs[pair]['text'], plot_width=1000)
+#         fig.line(x, y, line_width=2)
+#
+#         plot_resources = RESOURCES.render(
+#             js_raw=CDN.js_raw,
+#             css_raw=CDN.css_raw,
+#             js_files=CDN.js_files,
+#             css_files=CDN.css_files,
+#         )
+#
+#         script, div = components(fig, INLINE)
+#         return self.render(
+#             'admin/results.html',
+#             plot_script=script, plot_div=div, plot_resources=plot_resources,
+#             filter_list=filters,
+#             pair_list=pairs
+#         )
 
 
 # Job definitions

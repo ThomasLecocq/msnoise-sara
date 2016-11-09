@@ -17,7 +17,7 @@ setup(
         'msnoise.plugins.admin_view': [
             'SaraConfigView = msnoise_sara.plugin_definition:SaraConfigView',
             'SaraStationView = msnoise_sara.plugin_definition:SaraStationView',
-            'SaraResultPlotter = msnoise_sara.plugin_definition:SaraResultPlotter',
+            # 'SaraResultPlotter = msnoise_sara.plugin_definition:SaraResultPlotter',
         ],
         'msnoise.plugins.jobtypes': [
             'register = msnoise_sara.plugin_definition:register_job_types',
