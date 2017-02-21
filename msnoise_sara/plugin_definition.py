@@ -1,7 +1,7 @@
 import sys
 
 import click
-from flask.ext.admin.contrib.sqla import ModelView
+from flask_admin.contrib.sqla import ModelView
 
 from .sara_table_def import SaraConfig, SaraStation
 
@@ -25,7 +25,7 @@ def sara():
 @click.command()
 def test():
     for p in sys.path:
-        print p
+        print(p)
 
 @click.command()
 def install():

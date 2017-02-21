@@ -47,10 +47,15 @@ def main():
         logging.debug("Computing all pairs")
         for job in jobs:
             netsta1, netsta2 = job.pair.split(':')
+            net1,sta1=netsta1.split(".")
+            net2,sta2=netsta2.split(".")
             trace = Trace()
-            trace.data = all[netsta1][0].data / all[netsta2][0].data
-            trace.stats.starttime = all[netsta1][0].stats.starttime
-            trace.stats.delta = all[netsta1][0].stats.delta
+            tmp = Stream(traces = [all[netsta1][0], all[netsta2][0]])
+            tmp = make_same_length(tmp)
+            trace.data = tmp.select(network=net1, station=sta1)[0].data / \
+                         tmp.select(network=net2, station=sta2)[0].data
+            trace.stats.starttime = tmp[0].stats.starttime
+            trace.stats.delta = tmp[0].stats.delta
 
             env_output_dir = os.path.join('SARA','RATIO', job.pair.replace(":","_"))
             if not os.path.isdir(env_output_dir):
@@ -59,4 +64,5 @@ def main():
                         format="MSEED", encoding="FLOAT32")
 
             update_job(db, job.day, job.pair, 'SARA_RATIO', 'D')
+            del tmp
         logging.info("Done. It took %.2f seconds" % (time.time()-t0))
