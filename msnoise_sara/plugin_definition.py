@@ -49,20 +49,15 @@ def plot():
     pass
 
 @click.command()
-@click.argument('sta1')
-@click.argument('sta2')
-@click.option('-f', '--filterid', default=1, help='Filter ID')
-@click.option('-c', '--comp', default="ZZ", help='Components (ZZ, ZR,...)')
 @click.option('-S', '--smooth', default=1, help='Smooth over N points')
 @click.option('-s', '--show', help='Show interactively?',
               default=True, type=bool)
 @click.option('-o', '--outfile', help='Output filename (?=auto)',
               default=None, type=str)
-def result(sta1, sta2, filterid, comp, smooth, show, outfile):
-    """Plots the interferogram between sta1 and sta2 (parses the CCFs)\n
-    STA1 and STA2 must be provided with this format: NET.STA !"""
+def ratios(smooth, show, outfile):
+    """Plots the ratios between all pairs"""
     from .plot_ratios import main
-    main(sta1, sta2, filterid, comp, smooth, show, outfile)
+    main(smooth, show, outfile)
 
 
 
@@ -72,7 +67,7 @@ sara.add_command(envelope)
 sara.add_command(ratio)
 
 sara.add_command(plot)
-plot.add_command(result)
+plot.add_command(ratios)
 
 ### WEB INTERFACE PLUGIN DEFINITION
 class SaraConfigView(ModelView):
