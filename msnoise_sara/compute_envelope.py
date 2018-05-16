@@ -76,12 +76,14 @@ def main():
                 comps.append(comp[0])
                 comps.append(comp[1])
         comps = np.unique(comps)
-        basetime, stream = preprocess(db, stations, comps, goal_day, params)
-        stream.merge()
+        stream = preprocess(db, stations, comps, goal_day, params)
+
         for trace in stream:
             # SARA
             logging.debug("Processing")
             ### ENVELOPE
+            if len(trace.data) % 2 != 0:
+                trace.data = trace.data[:-1]
             trace.data = envelope(trace.data)
             n = int(params.env_sampling_rate)
             sps = int(trace.stats.sampling_rate)
