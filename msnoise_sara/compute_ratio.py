@@ -39,7 +39,11 @@ def main():
             tmp = get_sara_param(db, station)
             sensitivity = tmp.sensitivity
             site_effect = tmp.site_effect
-            tmp = read(os.path.join("SARA", "ENV", station, "%s.MSEED"%goal_day))
+            try:
+                tmp = read(os.path.join("SARA", "ENV", station, "%s.MSEED"%goal_day))
+            except:
+                logging.debug("Error reading %s:%s"%(station, goal_day))
+                continue
             for trace in tmp:
                 trace.data /= (sensitivity * site_effect)
             all[station] = tmp
@@ -50,18 +54,22 @@ def main():
             net1,sta1=netsta1.split(".")
             net2,sta2=netsta2.split(".")
             trace = Trace()
-            tmp = Stream(traces = [all[netsta1][0], all[netsta2][0]])
+            if netsta1 not in all or netsta2 not in all:
+                update_job(db, job.day, job.pair, 'SARA_RATIO', 'D')
+                continue
+            tmp = Stream(traces=[all[netsta1][0], all[netsta2][0]])
             tmp = make_same_length(tmp)
-            trace.data = tmp.select(network=net1, station=sta1)[0].data / \
-                         tmp.select(network=net2, station=sta2)[0].data
-            trace.stats.starttime = tmp[0].stats.starttime
-            trace.stats.delta = tmp[0].stats.delta
+            if len(tmp):
+                trace.data = tmp.select(network=net1, station=sta1)[0].data / \
+                             tmp.select(network=net2, station=sta2)[0].data
+                trace.stats.starttime = tmp[0].stats.starttime
+                trace.stats.delta = tmp[0].stats.delta
 
-            env_output_dir = os.path.join('SARA','RATIO', job.pair.replace(":","_"))
-            if not os.path.isdir(env_output_dir):
-                os.makedirs(env_output_dir)
-            trace.write(os.path.join(env_output_dir, goal_day+'.MSEED'),
-                        format="MSEED", encoding="FLOAT32")
+                env_output_dir = os.path.join('SARA','RATIO', job.pair.replace(":","_"))
+                if not os.path.isdir(env_output_dir):
+                    os.makedirs(env_output_dir)
+                trace.write(os.path.join(env_output_dir, goal_day+'.MSEED'),
+                            format="MSEED", encoding="FLOAT32")
 
             update_job(db, job.day, job.pair, 'SARA_RATIO', 'D')
             del tmp
