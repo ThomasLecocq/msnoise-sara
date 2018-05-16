@@ -54,7 +54,7 @@ install:
 script:
   - mkdir MSNoiseSARATest
   - cd MSNoiseSARATest
-  - msnoise install --tech 1
+  - msnoise init --tech 1
   - msnoise config --set plugins=msnoise_sara
   - msnoise p sara install
   - msnoise p sara

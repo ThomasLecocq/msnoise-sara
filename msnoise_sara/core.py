@@ -20,7 +20,7 @@ def sara():
 @click.command()
 def test():
     for p in sys.path:
-        print p
+        print(p)
 
 @click.command()
 def install():
