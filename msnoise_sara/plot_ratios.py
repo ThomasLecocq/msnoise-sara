@@ -14,7 +14,11 @@ def main(smooth, show, outfile):
         sta1 = "%s.%s" % (sta1.net, sta1.sta)
         sta2 = "%s.%s" % (sta2.net, sta2.sta)
         pair = "%s_%s" % (sta1, sta2)
-        st = read(os.path.join('SARA','RATIO', pair, "*"))
+        try:
+            st = read(os.path.join('SARA','RATIO', pair, "*"))
+        except:
+            print("No data for %s" % pair)
+            continue
         st.merge(fill_value=np.nan)
         t = pd.date_range(st[0].stats.starttime.datetime,
                           periods=st[0].stats.npts,

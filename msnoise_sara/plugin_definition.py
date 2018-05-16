@@ -1,5 +1,5 @@
 import sys
-
+import time
 import click
 from flask_admin.contrib.sqla import ModelView
 
@@ -34,10 +34,23 @@ def install():
 
 
 @click.command()
-def envelope():
+@click.pass_context
+def envelope(ctx):
     from .compute_envelope import main
-    main()
-
+    from multiprocessing import Process
+    threads = ctx.obj['MSNOISE_threads']
+    delay = ctx.obj['MSNOISE_threadsdelay']
+    if threads == 1:
+        main()
+    else:
+        processes = []
+        for i in range(threads):
+            p = Process(target=main)
+            p.start()
+            processes.append(p)
+            time.sleep(delay)
+        for p in processes:
+            p.join()
 
 @click.command()
 def ratio():
