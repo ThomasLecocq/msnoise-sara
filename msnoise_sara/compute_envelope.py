@@ -19,7 +19,10 @@ class Params():
 def main():
 
     db = connect()
-    params = Params()
+    # Obtaining the default MSNoise Parameters:
+    params = get_params(db)
+    
+    # Then customizing/overriding with Sara Parameters:
     params.goal_duration = float(get_config(db, "analysis_duration",
                                           plugin="Sara"))
     params.resampling_method = get_config(db, "resampling_method",
@@ -83,6 +86,7 @@ def main():
             logging.debug("Processing")
             ### ENVELOPE
             if len(trace.data) % 2 != 0:
+                logging.debug("Trace not even, removing last sample")
                 trace.data = trace.data[:-1]
             trace.data = envelope(trace.data)
             n = int(params.env_sampling_rate)
@@ -96,10 +100,21 @@ def main():
                 os.makedirs(env_output_dir)
             trace.write(os.path.join(env_output_dir, goal_day+'.MSEED'),
                         format="MSEED", encoding="FLOAT32")
-            logging.info("Done. It took %.2f seconds" % (time.time()-t0))
             del trace
         del stream
+        logging.info("Done. It took %.2f seconds" % (time.time() - t0))
+        # THIS SHOULD BE IN THE API
+        updated = False
+        mappings = [{'ref': job.ref, 'flag': "D"} for job in jobs]
+        while not updated:
+            try:
+                db.bulk_update_mappings(Job, mappings)
+                db.commit()
+                updated = True
+            except:
+                time.sleep(np.random.random())
+                pass
 
         for job in jobs:
-            update_job(db, job.day, job.pair, 'SARA_ENV', 'D')
+            # update_job(db, job.day, job.pair, 'SARA_ENV', 'D')
             update_job(db, job.day, job.pair, 'SARA_RATIO', 'T')

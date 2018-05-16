@@ -6,7 +6,9 @@ import datetime
 
 Base = declarative_base()
 
-class SaraConfig(Base):
+from msnoise.msnoise_table_def import PrefixerBase
+
+class SaraConfig(PrefixerBase):
     """
     Config Object
 
@@ -16,7 +18,7 @@ class SaraConfig(Base):
     :type value: str
     :param value: The value of parameter `name`
     """
-    __tablename__ = "sara-config"
+    __incomplete_tablename__ = "sara-config"
     name = Column(String(255), primary_key=True)
     value = Column(String(255))
 
@@ -25,7 +27,7 @@ class SaraConfig(Base):
         self.name = name
         self.value = value
 
-class SaraStation(Base):
+class SaraStation(PrefixerBase):
     """
     Station Object
 
@@ -49,7 +51,7 @@ class SaraStation(Base):
     :type used: bool
     :param used: Whether this station must be used in the computations.
     """
-    __tablename__ = "sara-stations"
+    __incomplete_tablename__ = "sara-stations"
     ref = Column(Integer, primary_key=True)
     net = Column(String(10))
     sta = Column(String(10))
