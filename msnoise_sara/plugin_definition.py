@@ -177,5 +177,6 @@ class SaraStationView(ModelView):
 
 def register_job_types():
     jobtypes = []
-    jobtypes.append( {"name":"SARA_ENV", "after":"scan_archive"} )
+    jobtypes.append({"name": "SARA_ENV", "after" : "scan_archive"})
+    jobtypes.append({"name": "SARA_RATIO", "after": ""})
     return jobtypes

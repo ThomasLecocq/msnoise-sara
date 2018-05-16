@@ -1,3 +1,4 @@
+import datetime
 from msnoise.api import *
 
 from .default import default
@@ -24,3 +25,11 @@ def main():
                                 sensitivity=1, site_effect=1 ))
 
     session.commit()
+
+    ccjobs = get_jobs_by_lastmod(session, "CC",
+                                 lastmod=datetime.datetime(1970, 1, 1))
+
+    for job in ccjobs:
+        update_job(session, job.day, job.pair, "SARA_ENV", "T")
+    session.commit()
+    session.close()

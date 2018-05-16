@@ -83,19 +83,29 @@ def main():
 
         for trace in stream:
             # SARA
-            logging.debug("Processing")
+            logging.debug("Processing %s" % trace.id)
             ### ENVELOPE
+
             if len(trace.data) % 2 != 0:
-                logging.debug("Trace not even, removing last sample")
+                logging.debug("%s Trace not even, removing last sample" % 
+                              trace.id)
                 trace.data = trace.data[:-1]
-            trace.data = envelope(trace.data)
             n = int(params.env_sampling_rate)
             sps = int(trace.stats.sampling_rate)
+            if len(trace.data) % (sps * n) != 0:
+                logging.debug("%s Cutting trace to n*sps" % trace.id)
+                div = trace.stats.npts // (sps*n)
+                trace.data = trace.data[:int(div*sps*n)]
+            if not len(trace.data):
+                continue
+            trace.data = envelope(trace.data)
             trace.data = bn.move_median(trace.data, sps*n)
             trace.data = trace.data[n*sps-1::sps*n]
             trace.stats.sampling_rate = 1./float(n)
             trace.data = np.require(trace.data, np.float32)
-            env_output_dir = os.path.join('SARA','ENV', "%s.%s" % (trace.stats.network, trace.stats.station))
+            env_output_dir = os.path.join('SARA', 'ENV',
+                                          "%s.%s" % (trace.stats.network,
+                                                     trace.stats.station))
             if not os.path.isdir(env_output_dir):
                 os.makedirs(env_output_dir)
             trace.write(os.path.join(env_output_dir, goal_day+'.MSEED'),
@@ -116,5 +126,4 @@ def main():
                 pass
 
         for job in jobs:
-            # update_job(db, job.day, job.pair, 'SARA_ENV', 'D')
             update_job(db, job.day, job.pair, 'SARA_RATIO', 'T')
