@@ -44,6 +44,7 @@ before_install:
   - conda install --yes -q lxml pyqt
   - conda install --yes -q -c conda-forge obspy
   - conda install --yes -q -c conda-forge flask-admin markdown codecov
+  - conda install --yes -q -c conda-forge bottleneck
   - pip install https://github.com/ROBelgium/MSNoise/archive/new_cc.zip
 
 install:
