@@ -55,7 +55,9 @@ def main():
         stations = []
         pairs = []
         refs = []
-
+        if not len(jobs):
+            continue
+            
         for job in jobs:
             refs.append(job.ref)
             pairs.append(job.pair)
