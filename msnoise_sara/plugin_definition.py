@@ -115,8 +115,8 @@ class SaraStationView(ModelView):
     name = "Station Config"
 
     #inline_models = (SaraConfig,)
-    can_create = False
-    can_delete = False
+    can_create = True
+    can_delete = True
     page_size = 50
     # Override displayed fields
     column_list = ('net', 'sta', 'sensitivity', 'site_effect')
