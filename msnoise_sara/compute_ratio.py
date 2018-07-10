@@ -1,6 +1,7 @@
 import time
 
 import bottleneck as bn
+from obspy.core import Stream, Trace
 from msnoise.api import *
 from .api import get_sara_param
 
@@ -57,8 +58,18 @@ def main():
             if netsta1 not in all or netsta2 not in all:
                 update_job(db, job.day, job.pair, 'SARA_RATIO', 'D')
                 continue
-            tmp = Stream(traces=[all[netsta1][0], all[netsta2][0]])
+            tmp = Stream()
+            for tr in all[netsta1]:
+                tmp += tr
+            for tr in all[netsta2]:
+                tmp += tr
+            # tmp = Stream(traces=[all[netsta1], all[netsta2]])
+            # print(tmp)
+            tmp.merge()
+            print(tmp)
             tmp = make_same_length(tmp)
+            print(tmp)
+            tmp.merge(fill_value=np.nan)
             if len(tmp):
                 trace.data = tmp.select(network=net1, station=sta1)[0].data / \
                              tmp.select(network=net2, station=sta2)[0].data

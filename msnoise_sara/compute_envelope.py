@@ -82,37 +82,38 @@ def main():
                 comps.append(comp[1])
         comps = np.unique(comps)
         stream = preprocess(db, stations, comps, goal_day, params)
-
-        for trace in stream:
+        uniqueids = np.unique([tr.id for tr in stream])
+        for uid in uniqueids:
+            tmp = stream.select(id=uid).copy()
             # SARA
-            logging.debug("Processing %s" % trace.id)
+            logging.debug("Processing %s" % uid)
             ### ENVELOPE
-
-            if len(trace.data) % 2 != 0:
-                logging.debug("%s Trace not even, removing last sample" % 
-                              trace.id)
-                trace.data = trace.data[:-1]
-            n = int(params.env_sampling_rate)
-            sps = int(trace.stats.sampling_rate)
-            if len(trace.data) % (sps * n) != 0:
-                logging.debug("%s Cutting trace to n*sps" % trace.id)
-                div = trace.stats.npts // (sps*n)
-                trace.data = trace.data[:int(div*sps*n)]
-            if not len(trace.data):
-                continue
-            trace.data = envelope(trace.data)
-            trace.data = bn.move_median(trace.data, sps*n)
-            trace.data = trace.data[n*sps-1::sps*n]
-            trace.stats.sampling_rate = 1./float(n)
-            trace.data = np.require(trace.data, np.float32)
+            for trace in tmp:
+                if len(trace.data) % 2 != 0:
+                    logging.debug("%s Trace not even, removing last sample" %
+                                  trace.id)
+                    trace.data = trace.data[:-1]
+                n = int(params.env_sampling_rate)
+                sps = int(trace.stats.sampling_rate)
+                if len(trace.data) % (sps * n) != 0:
+                    logging.debug("%s Cutting trace to n*sps" % trace.id)
+                    div = trace.stats.npts // (sps*n)
+                    trace.data = trace.data[:int(div*sps*n)]
+                if not len(trace.data):
+                    continue
+                trace.data = envelope(trace.data)
+                trace.data = bn.move_median(trace.data, sps*n)
+                trace.data = trace.data[n*sps-1::sps*n]
+                trace.stats.sampling_rate = 1./float(n)
+                trace.data = np.require(trace.data, np.float32)
             env_output_dir = os.path.join('SARA', 'ENV',
                                           "%s.%s" % (trace.stats.network,
                                                      trace.stats.station))
             if not os.path.isdir(env_output_dir):
                 os.makedirs(env_output_dir)
-            trace.write(os.path.join(env_output_dir, goal_day+'.MSEED'),
+            tmp.write(os.path.join(env_output_dir, goal_day+'.MSEED'),
                         format="MSEED", encoding="FLOAT32")
-            del trace
+            del trace, tmp
         del stream
         logging.info("Done. It took %.2f seconds" % (time.time() - t0))
         # THIS SHOULD BE IN THE API
