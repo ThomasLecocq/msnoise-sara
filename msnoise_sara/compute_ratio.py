@@ -56,7 +56,8 @@ def main():
             net2,sta2=netsta2.split(".")
             trace = Trace()
             if netsta1 not in all or netsta2 not in all:
-                update_job(db, job.day, job.pair, 'SARA_RATIO', 'D')
+                update_job(db, job.day, job.pair, 'SARA_RATIO', 'D',
+                           ref=job.ref)
                 continue
             tmp = Stream()
             for tr in all[netsta1]:
@@ -66,9 +67,7 @@ def main():
             # tmp = Stream(traces=[all[netsta1], all[netsta2]])
             # print(tmp)
             tmp.merge()
-            print(tmp)
             tmp = make_same_length(tmp)
-            print(tmp)
             tmp.merge(fill_value=np.nan)
             if len(tmp):
                 trace.data = tmp.select(network=net1, station=sta1)[0].data / \
@@ -82,6 +81,6 @@ def main():
                 trace.write(os.path.join(env_output_dir, goal_day+'.MSEED'),
                             format="MSEED", encoding="FLOAT32")
 
-            update_job(db, job.day, job.pair, 'SARA_RATIO', 'D')
+            update_job(db, job.day, job.pair, 'SARA_RATIO', 'D', ref=job.ref)
             del tmp
         logging.info("Done. It took %.2f seconds" % (time.time()-t0))

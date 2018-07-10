@@ -57,7 +57,7 @@ def main():
         refs = []
         if not len(jobs):
             continue
-            
+
         for job in jobs:
             refs.append(job.ref)
             pairs.append(job.pair)
@@ -116,17 +116,8 @@ def main():
             del trace, tmp
         del stream
         logging.info("Done. It took %.2f seconds" % (time.time() - t0))
-        # THIS SHOULD BE IN THE API
-        updated = False
-        mappings = [{'ref': job.ref, 'flag': "D"} for job in jobs]
-        while not updated:
-            try:
-                db.bulk_update_mappings(Job, mappings)
-                db.commit()
-                updated = True
-            except:
-                time.sleep(np.random.random())
-                pass
 
+        # THIS SHOULD BE IN THE API
+        massive_update_job(db, jobs, flag="D")
         for job in jobs:
             update_job(db, job.day, job.pair, 'SARA_RATIO', 'T')
