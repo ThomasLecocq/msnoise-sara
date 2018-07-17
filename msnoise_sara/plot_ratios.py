@@ -29,6 +29,7 @@ def main(smooth, show, outfile):
         if smooth != 1:
             s = s.rolling(window=smooth, min_periods=1, center=True).median()
         plt.plot(s.index, s, lw=1.0, label='%s' % pair)
+    plt.ylim(0,200)
     plt.legend()
     fig.autofmt_xdate()
     plt.tight_layout()

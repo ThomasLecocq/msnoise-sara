@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime,\
 from sqlalchemy.ext.declarative import declarative_base
 import datetime
 
-Base = declarative_base()
+# Base = declarative_base()
 
 from msnoise.msnoise_table_def import PrefixerBase
 

@@ -82,6 +82,8 @@ def main():
                 comps.append(comp[1])
         comps = np.unique(comps)
         stream = preprocess(db, stations, comps, goal_day, params)
+        for tr in stream:
+            tr.stats.location = "00"
         uniqueids = np.unique([tr.id for tr in stream])
         for uid in uniqueids:
             tmp = stream.select(id=uid).copy()
