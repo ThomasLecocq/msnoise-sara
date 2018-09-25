@@ -44,6 +44,12 @@ def main():
 
     params.components_to_compute = get_components_to_compute(db, plugin="Sara")
 
+    if params.remove_response:
+        logging.debug('Pre-loading all instrument response')
+        responses = preload_instrument_responses(db)
+    else:
+        responses = None
+
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s [%(levelname)s] %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S')
@@ -81,7 +87,7 @@ def main():
                 comps.append(comp[0])
                 comps.append(comp[1])
         comps = np.unique(comps)
-        stream = preprocess(db, stations, comps, goal_day, params)
+        stream = preprocess(db, stations, comps, goal_day, params, responses)
         for tr in stream:
             tr.stats.location = "00"
         uniqueids = np.unique([tr.id for tr in stream])
