@@ -69,7 +69,7 @@ def main():
             tmp.merge()
             tmp = make_same_length(tmp)
             tmp.merge(fill_value=np.nan)
-            if len(tmp):
+            if len(tmp)>1:
                 trace.data = tmp.select(network=net1, station=sta1)[0].data / \
                              tmp.select(network=net2, station=sta2)[0].data
                 trace.stats.starttime = tmp[0].stats.starttime
