@@ -10,10 +10,13 @@ matrix:
     # (or, well, at least the lowest version number that is available through
     #  anaconda..)
     - os: linux
-      env: PYTHON_VERSION=3.6
+      env: PYTHON_VERSION=3.7
 
     - os: osx
-      env: PYTHON_VERSION=3.6
+      env: PYTHON_VERSION=3.7
+      
+    - os: windows
+      env: PYTHON_VERSION=3.7
 
 
 sudo: false
@@ -24,9 +27,6 @@ before_install:
     else
       export OS="Linux";
     fi
-  - if [[ $TRAVIS_OS_NAME == "osx" ]]; then brew update > /dev/null && brew install mariadb && mysql.server start; fi
-  # MySQL database
-  - mysql -u root -e 'create database msnoise;'
   # Python and related stuff
   - if [[ "${PYTHON_VERSION:0:1}" == '2' ]]; then
       wget https://repo.continuum.io/miniconda/Miniconda2-latest-${OS}-x86_64.sh -O miniconda.sh;
@@ -36,16 +36,11 @@ before_install:
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
+  - conda config --add channels conda-forge
+  - conda config --add channels conda-forge
   - conda update -q --yes conda
   # Installs required packages
-  - conda install --yes -q pip python=$PYTHON_VERSION
-  - conda install --yes -q numpy scipy matplotlib pandas sqlalchemy
-  - conda install --yes -q sphinx jinja2 flask pymysql click
-  - conda install --yes -q lxml pyqt
-  - conda install --yes -q -c conda-forge obspy
-  - conda install --yes -q -c conda-forge flask-admin markdown codecov
-  - conda install --yes -q -c conda-forge bottleneck
-  - pip install https://github.com/ROBelgium/MSNoise/archive/master.zip
+  - conda install --yes -q pip python=$PYTHON_VERSION msnoise obspy bottleneck
 
 install:
   - python setup.py install
@@ -54,7 +49,7 @@ install:
 script:
   - mkdir MSNoiseSARATest
   - cd MSNoiseSARATest
-  - msnoise init --tech 1
+  - msnoise db init --tech 1
   - msnoise config --set plugins=msnoise_sara
   - msnoise p sara install
   - msnoise p sara
