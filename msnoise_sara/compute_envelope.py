@@ -88,8 +88,8 @@ def main():
                 comps.append(comp[1])
         comps = np.unique(comps)
         stream = preprocess(db, stations, comps, goal_day, params, responses)
-        for tr in stream:
-            tr.stats.location = "00"
+        # for tr in stream:
+        #     tr.stats.location = "00"
         uniqueids = np.unique([tr.id for tr in stream])
         for uid in uniqueids:
             tmp = stream.select(id=uid).copy()
@@ -114,9 +114,14 @@ def main():
                 trace.data = trace.data[n*sps-1::sps*n]
                 trace.stats.sampling_rate = 1./float(n)
                 trace.data = np.require(trace.data, np.float32)
+            if trace.stats.location == "":
+                loc = "--"
+            else:
+                loc = trace.stats.location
             env_output_dir = os.path.join('SARA', 'ENV',
-                                          "%s.%s" % (trace.stats.network,
-                                                     trace.stats.station))
+                                          "%s.%s.%s" % (trace.stats.network,
+                                                        trace.stats.station,
+                                                        loc))
             if not os.path.isdir(env_output_dir):
                 os.makedirs(env_output_dir)
             tmp.write(os.path.join(env_output_dir, goal_day+'.MSEED'),
