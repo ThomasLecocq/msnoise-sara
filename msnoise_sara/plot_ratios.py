@@ -28,7 +28,7 @@ def main(smooth, show, outfile):
                                   periods=st[0].stats.npts,
                                   freq="%ims" % (st[0].stats.delta * 1000))
                 s = pd.Series(data=st[0].data, index=t, dtype=st[0].data.dtype)
-                s = s.resample('1T').median()
+                s = s.resample('1min').median()
                 s.to_csv("%s.csv"%pair)
                 if smooth != 1:
                     s = s.rolling(window=smooth, min_periods=1, center=True).median()

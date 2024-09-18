@@ -11,13 +11,16 @@ import bottleneck as bn
 from msnoise.preprocessing import preprocess
 from msnoise.api import *
 
+import logbook
 
 class Params():
     pass
 
 
-def main():
-
+def main(loglevel="INFO"):
+    logger = logbook.Logger("msnoise")
+    logger = get_logger('msnoise.sara_envelope_child', loglevel,
+                        with_pid=True)
     db = connect()
     # Obtaining the default MSNoise Parameters:
     params = get_params(db)
@@ -87,7 +90,7 @@ def main():
                 comps.append(comp[0])
                 comps.append(comp[1])
         comps = np.unique(comps)
-        stream = preprocess(db, stations, comps, goal_day, params, responses)
+        stream = preprocess(stations, comps, goal_day, params, responses, logger='msnoise.sara_envelope_child')
         # for tr in stream:
         #     tr.stats.location = "00"
         uniqueids = np.unique([tr.id for tr in stream])
