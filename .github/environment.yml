@@ -1,0 +1,29 @@
+name: test
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - numpy
+  - scipy
+  - obspy>=1.4.1
+  - sqlalchemy
+  - flask
+  - flask-admin
+  - flask-wtf
+  - markdown
+  - scandir
+  - logbook
+  - pytables
+  - click
+  - pandas
+  - folium
+  - pip
+  - pymysql
+  - xarray
+  - sqlalchemy-utils
+  - pooch
+  - bottleneck
+  - pip:
+      - git+https://github.com/regeirk/pycwt
+      - git+https://github.com/ROBelgium/MSNoise
+
