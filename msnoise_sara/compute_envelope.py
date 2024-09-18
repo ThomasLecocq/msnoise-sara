@@ -5,6 +5,8 @@ try:
 except:
     pass
 
+import concurrent
+
 from obspy.signal.filter import envelope
 import bottleneck as bn
 
@@ -90,8 +92,9 @@ def main(loglevel="INFO"):
                 comps.append(comp[0])
                 comps.append(comp[1])
         comps = np.unique(comps)
-        stream = preprocess(stations, comps, goal_day, params, responses, logger='msnoise.sara_envelope_child')
-        # for tr in stream:
+        with concurrent.futures.ProcessPoolExecutor(max_workers=1) as executor:
+            stream = executor.submit(preprocess, stations, comps, goal_day, params, responses, loglevel).result()
+        logger.info("Received preprocessed traces")# for tr in stream:
         #     tr.stats.location = "00"
         uniqueids = np.unique([tr.id for tr in stream])
         for uid in uniqueids:
