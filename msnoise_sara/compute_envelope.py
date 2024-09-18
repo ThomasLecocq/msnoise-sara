@@ -72,9 +72,9 @@ def main(loglevel="INFO"):
         for job in jobs:
             refs.append(job.ref)
             pairs.append(job.pair)
-            netsta1, netsta2 = job.pair.split(':')
-            stations.append(netsta1)
-            stations.append(netsta2)
+            # netsta1, netsta2 = job.pair.split(':')
+            stations.append(job.pair)
+            # stations.append(netsta2)
             goal_day = job.day
 
         stations = np.unique(stations)
