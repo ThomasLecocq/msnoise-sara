@@ -1,8 +1,7 @@
 # MSNoise-SARA
 The Amplitude Ratio plugin for MSNoise - Bringing SARA (Taisne et al 2011) to MSNoise
 
-[![Join the chat at https://gitter.im/ROBelgium/MSNoise](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ROBelgium/MSNoise?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://travis-ci.org/ThomasLecocq/msnoise-sara.png)](https://travis-ci.org/ThomasLecocq/msnoise-sara)
+CI Builds: [![Github Action Status](https://github.com/ThomasLecocq/msnoise-sara/actions/workflows/test_full.yml/badge.svg)](https://github.com/ThomasLecocq/msnoise-sara/actions)
 
 Seismic amplitude ratio analysis (SARA) has been used successfully to
 track the sub-surface migration of magma prior to an eruption at Piton de
