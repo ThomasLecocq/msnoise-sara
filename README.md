@@ -29,6 +29,7 @@ In a new or current MSNoise project, once the station table has been populated a
   * automatically create the `SARA_ENV` jobs if the database already contains `CC` jobs.
   * if your DB doesn't yet contain `CC` jobs and you only want `SARA_ENV` jobs, simply run ``msnoise new_jobs --nocc``
 * ``msnoise p sara envelope`` will compute the envelope of the signal for all available data
+* **!!TODO!!** ``msnoise p sara new_jobs`` will determine which new ``SARA_RATIO`` jobs need to be done. **!!TODO!!**
 * ``msnoise p sara ratio`` will compute the ratio of the envelopes for each pair of stations (only for common data, of course)
 * ``msnoise p sara plot ratios`` will plot the ratios of all station pairs.
  
